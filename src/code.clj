@@ -1,36 +1,35 @@
-(def counter (atom ""))
+(def log (atom ""))
 
 (do
   (future
-    (swap! counter #(str % "foo")))
+    (swap! log (fn [l] (str l "foo"))))
   (future
-    (swap! counter #(str % "bar"))))
+    (swap! log (fn [l] (str l "bar")))))
 
-@counter
+@log ; => "foobar"
 
-(reset! counter "")
+(reset! log "")
 
 (do
   (future
-    (swap! counter #(do (Thread/sleep 1000)
-                        (str % "foo"))))
+    (swap! log (fn [l] (do (Thread/sleep 1000) (str l "foo")))))
   (future
-    (swap! counter #(str % "bar"))))
+    (swap! log (fn [l] (str l "bar")))))
 
-@counter
+@log ; => "foobar"
 
 ; does not work; probably because of `identical`
 
-; (reset! counter "")
+; (reset! log "")
 
 ; (do
 ;   (future
-;     (compare-and-set! counter
+;     (compare-and-set! log
 ;                       ""
-;                       (str @counter "foo")))
+;                       (str @log "foo")))
 ;   (future
-;     (compare-and-set! counter
+;     (compare-and-set! log
 ;                       "foo"
-;                       (str @counter "bar"))))
+;                       (str @log "bar"))))
 
-; @counter
+; @log

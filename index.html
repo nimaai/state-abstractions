@@ -53,6 +53,12 @@
                       <img style="" src="images/mailbox.jpg"/>
                     </textarea>
                   </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      ## Common example
+                      logger
+                    </textarea>
+                  </section>
                 </section>
 				<section>
                   <section data-markdown>
@@ -163,6 +169,42 @@
                       <img style="float: left; width: 300px; margin: 40px" src="images/flip-book.jpeg"/>
                     </textarea>
                   </section>
+                  <section>
+                    <pre>
+                      <code class="clojure hljs" data-trim data-noescape>
+                        (def log (atom ""))
+
+                        (do
+                          (future
+                            (swap! log (fn [l] (str l "foo"))))
+                          (future
+                            (swap! log (fn [l] (str l "bar")))))
+
+                        @log<span class="fragment" data-fragment-index="0"> ; => "foobar"</span>
+                      </code>
+                    </pre>
+                  </section>
+                  <section>
+                    <pre>
+                      <code class="clojure hljs" data-trim data-noescape>
+                        (def log (atom ""))
+
+                        (do
+                          (future
+                            (swap! log (fn [l] (do (Thread/sleep 1000) (str l "foo")))))
+                          (future
+                            (swap! log (fn [l] (str l "bar")))))
+
+                        <span class="fragment fade-out" data-fragment-index="1">@log<span class="fragment" data-fragment-index="0"> ; => "foo" ?</span></span>
+                        <span class="fragment fade-in" data-fragment-index="1">@log ; => "barfoo"</span>
+                      </code>
+                    </pre>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      <img style="height: 600px" src="images/stm.png"/>
+                    </textarea>
+                  </section>
                   <section data-markdown>
                     <textarea data-template>
                       [clojure.org](clojure.org)
@@ -175,6 +217,47 @@
                       #### Abstraction 3:
                       ## monadic function composition
                     </textarea>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      ## Haskell
+                      <img style="width: 300px" src="images/haskell.png"/>
+                    </textarea>
+                  </section>
+                  <section>
+                    <h2>No eraser.</h2>
+                    <span class="fragment" data-fragment-index="0"><h2>No flip book.</h2></span>
+                    <span class="fragment" data-fragment-index="1"><h2>Just <span style="color: orange">function composition</span>.</h2></span>
+                  </section>
+                  <section>
+                    <pre>
+                      <code class="haskell hljs" data-trim data-noescape>
+                        add1 (x, log) = (x + 1, log ++ "add1")
+
+                        square x = x * x
+
+                        square(add1 1)
+
+                        <span class="fragment" data-fragment-index="0">(square . add1) 1</span>
+
+                        <span class="fragment" data-fragment-index="1">:type (.) -- > (.) :: (b -> c) -> (a -> b) -> (a -> c)</span>
+                      </code>
+                    </pre>
+                  </section>
+                  <section>
+                    <pre>
+                      <code class="haskell hljs" data-trim data-noescape>
+                        add1 <span class="fragment" data-fragment-index="0">(</span>x<span class="fragment" data-fragment-index="0">, log)</span> = <span class="fragment" data-fragment-index="0">(</span>x + 1<span class="fragment" data-fragment-index="0">, log ++ "add1")</span>
+
+                        square <span class="fragment" data-fragment-index="0">(</span>x<span class="fragment" data-fragment-index="0">, log)</span> = <span class="fragment" data-fragment-index="0">(</span>x * x<span class="fragment" data-fragment-index="0">, log ++ "square")</span>
+
+                        <span class="fragment" data-fragment-index="1">sub1 <span class="fragment" data-fragment-index="2">(</span>x<span class="fragment" data-fragment-index="2">, log)</span> = <span class="fragment" data-fragment-index="2">(</span>x - 1<span class="fragment" data-fragment-index="2">, log)</span></span>
+
+                        square(<span class="fragment" data-fragment-index="0">sub1(</span>add1 <span class="fragment" data-fragment-index="0">(</span>1<span class="fragment" data-fragment-index="0">, "")</span>))
+
+                        (square <span class="fragment" data-fragment-index="0">. sub1</span> . add1) (1, "")
+                      </code>
+                    </pre>
                   </section>
                 </section>
                 <section>
