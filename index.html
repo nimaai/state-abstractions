@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>State Abstractions</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
 		<link rel="stylesheet" href="css/theme/black.css">
@@ -24,8 +24,167 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section data-markdown>
+                  <textarea data-template>
+                    # State Abstractions
+                  </textarea>
+                </section>
+                <section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      ## Motivation
+                    </textarea>
+                  </section>
+                  <section>
+                    <img src="images/gun-shop.jpg"/>
+                  </section>
+                  <section>
+                    "A programming language that doesn't change the way you think is not worth learning." (Alan Perlis)
+                  </section>
+                  <section>
+                    <img style="float: left; width: 150px; margin: 40px" src="images/ruby.png"/>
+                    <img style="float: left; width: 150px; margin: 40px" src="images/clojure.png"/>
+                    <img style="float: left; width: 150px; margin: 40px" src="images/haskell.png"/>
+                    <img style="float: left; width: 150px; margin: 40px" src="images/elixir.png"/>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      ## State
+                      <img style="" src="images/mailbox.jpg"/>
+                    </textarea>
+                  </section>
+                </section>
+				<section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      #### Abstraction 1:
+                      ## pointer to memory location
+                    </textarea>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      ## Ruby
+                      <img style="width: 300px" src="images/ruby.png"/>
+                    </textarea>
+                  </section>
+                  <section>
+                    <pre>
+                      <code class="ruby hljs" data-trim data-noescape>
+                        class Math
+                          def add1(x) do
+                            x + 1
+                          end
+
+                          def square(x) do
+                            x * x
+                          end
+                        end
+
+                        m = Math.new
+                        m.square(m.add(1)) # => 4
+                      </code>
+                    </pre>
+                  </section>
+                  <section>
+                    <pre>
+                      <code class="ruby hljs" data-trim data-noescape>
+                        class Math<span class="fragment" data-fragment-index="0">
+                          def initialize
+                            @log = ""
+                          end</span>
+
+                          def add1(x) do
+                            <span class="fragment" data-fragment-index="1">@log += "add1"</span>
+                            x + 1
+                          end
+
+                          def square(x) do
+                            <span class="fragment" data-fragment-index="1">@log += "square"</span>
+                            x * x
+                          end
+                        end
+
+                        m = Math.new
+                        m.square(m.add(1)) # => 4
+                        <span class="fragment" data-fragment-index="2">m.log # => "add1square"</span>
+                      </code>
+                    </pre>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      OK.
+                      <br>
+                      <br>
+                      So, what's the deal with Ruby?
+                    </textarea>
+                  </section>
+                  <section>
+                    <span class="fragment highlight-red" data-fragment-index="0">Everything</span> is an object.
+                    <pre>
+                      <code class="ruby hljs" data-trim data-noescape>
+                        <span class="fragment" data-fragment-index="1">1.class # => Fixnum</span>
+                        <span class="fragment" data-fragment-index="2">true.class # => TrueClass</span>
+                      </code>
+                    </pre>
+                    <div class="fragment" data-fragment-index="3">
+                      <span style="color: orange">Including classes</span> themselves.
+                      <pre>
+                        <code class="ruby hljs" data-trim data-noescape>
+                          <span class="fragment" data-fragment-index="4">RuntimeClass = Class.new
+                          <span class="fragment" data-fragment-index="5">RuntimeClass.class # => Class</span>
+                        </code>
+                      <pre>
+                    </div>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      [ruby-lang.org](ruby-lang.org)
+                    </textarea>
+                  </section>
+                </section>
+                <section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      #### Abstraction 2:
+                      ## software transactional memory
+                    </textarea>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      ## Clojure
+                      <img style="width: 300px" src="images/clojure.png"/>
+                    </textarea>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      ## State + time = identity
+                      <div style="float: left; margin: 40px"></div>
+                      <img style="float: left; width: 300px; margin: 40px" src="images/eraser.jpeg"/>
+                      <img style="float: left; width: 300px; margin: 40px" src="images/flip-book.jpeg"/>
+                    </textarea>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      [clojure.org](clojure.org)
+                    </textarea>
+                  </section>
+                </section>
+                <section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      #### Abstraction 3:
+                      ## monadic function composition
+                    </textarea>
+                  </section>
+                </section>
+                <section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      #### Abstraction 4:
+                      ## process
+                    </textarea>
+                  </section>
+                </section>
 			</div>
 		</div>
 
@@ -37,6 +196,7 @@
 			// - https://github.com/hakimel/reveal.js#configuration
 			// - https://github.com/hakimel/reveal.js#dependencies
 			Reveal.initialize({
+                history: true,
 				dependencies: [
 					{ src: 'plugin/markdown/marked.js' },
 					{ src: 'plugin/markdown/markdown.js' },
