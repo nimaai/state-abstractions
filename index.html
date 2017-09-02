@@ -136,8 +136,9 @@
                       <span style="color: orange">Including classes</span> themselves.
                       <pre>
                         <code class="ruby hljs" data-trim data-noescape>
-                          <span class="fragment" data-fragment-index="4">RuntimeClass = Class.new
-                          <span class="fragment" data-fragment-index="5">RuntimeClass.class # => Class</span>
+                          <span class="fragment" data-fragment-index="4">Class.class # => Class
+                          <span class="fragment" data-fragment-index="5">RuntimeClass = Class.new
+                          <span class="fragment" data-fragment-index="6">RuntimeClass.class # => Class</span>
                         </code>
                       <pre>
                     </div>
@@ -211,6 +212,11 @@
                     </textarea>
                   </section>
                 </section>
+                <section data-markdown>
+                  <textarea data-template>
+                    # Super Brain Yoga
+                  </textarea>
+                </section>
                 <section>
                   <section data-markdown>
                     <textarea data-template>
@@ -232,15 +238,14 @@
                   <section>
                     <pre>
                       <code class="haskell hljs" data-trim data-noescape>
-                        add1 (x, log) = (x + 1, log ++ "add1")
-
+                        add1 x = x + 1
                         square x = x * x
 
-                        square(add1 1)
+                        <span class="fragment" data-fragment-index="0">square (add1 1) --> 4</span>
 
-                        <span class="fragment" data-fragment-index="0">(square . add1) 1</span>
+                        <span class="fragment" data-fragment-index="1">(square . add1) 1 --> 4</span>
 
-                        <span class="fragment" data-fragment-index="1">:type (.) -- > (.) :: (b -> c) -> (a -> b) -> (a -> c)</span>
+                        <span class="fragment" data-fragment-index="2">:type (.) --> (.) :: (b -> c) -> (a -> b) -> (a -> c)</span>
                       </code>
                     </pre>
                   </section>
@@ -248,16 +253,113 @@
                     <pre>
                       <code class="haskell hljs" data-trim data-noescape>
                         add1 <span class="fragment" data-fragment-index="0">(</span>x<span class="fragment" data-fragment-index="0">, log)</span> = <span class="fragment" data-fragment-index="0">(</span>x + 1<span class="fragment" data-fragment-index="0">, log ++ "add1")</span>
-
                         square <span class="fragment" data-fragment-index="0">(</span>x<span class="fragment" data-fragment-index="0">, log)</span> = <span class="fragment" data-fragment-index="0">(</span>x * x<span class="fragment" data-fragment-index="0">, log ++ "square")</span>
 
-                        <span class="fragment" data-fragment-index="1">sub1 <span class="fragment" data-fragment-index="2">(</span>x<span class="fragment" data-fragment-index="2">, log)</span> = <span class="fragment" data-fragment-index="2">(</span>x - 1<span class="fragment" data-fragment-index="2">, log)</span></span>
+                        square (add1 <span class="fragment" data-fragment-index="1">(</span>1<span class="fragment" data-fragment-index="1">, "")</span>)<span class="fragment" data-fragment-index="2"> --> (4, "add1square")</span>
 
-                        square(<span class="fragment" data-fragment-index="0">sub1(</span>add1 <span class="fragment" data-fragment-index="0">(</span>1<span class="fragment" data-fragment-index="0">, "")</span>))
-
-                        (square <span class="fragment" data-fragment-index="0">. sub1</span> . add1) (1, "")
+                        (square . add1) <span class="fragment" data-fragment-index="1">(</span>1<span class="fragment" data-fragment-index="1">, "")</span><span class="fragment" data-fragment-index="2"> --> (4, "add1square")</span>
                       </code>
                     </pre>
+                  </section>
+                  <section>
+                    <pre>
+                       <code class="haskell hljs" data-trim data-noescape>
+                         add1 (x, log) = (x + 1, log ++ "add1")
+                         square (x, log) = (x * x, log ++ "square")
+                         <span class="fragment" data-fragment-index="0">add2 <span class="fragment" data-fragment-index="1">(</span>x<span class="fragment" data-fragment-index="1">, log)</span> = <span class="fragment" data-fragment-index="1">(</span>x + 2<span class="fragment" data-fragment-index="1">, log)</span> -- without logging</span>
+
+                         square(<span class="fragment" data-fragment-index="0">add2(</span>add1 (1, ""))<span class="fragment" data-fragment-index="0">)</span></span><span class="fragment" data-fragment-index="2"> --> (16, "add1square")</span>
+
+                         (square .<span class="fragment" data-fragment-index="0"> add2 .</span> add1) (1, "")</span><span class="fragment" data-fragment-index="2"> --> (16, "add1square")</span>
+                       </code>
+                    </pre>
+                  </section>
+                  <section>
+                    <a href="#/2/3">analogous to Ruby example</a>
+                    <pre>
+                       <code class="haskell hljs" data-trim data-noescape>
+                         add1 x = <span class="fragment" data-fragment-index="0">(</span>x + 1<span class="fragment" data-fragment-index="0">, "add1")</span>
+                         square x = <span class="fragment" data-fragment-index="0">(</span>x * x<span class="fragment" data-fragment-index="0">, "square")</span>
+                         add2 x = x + 2<span class="fragment" data-fragment-index="1"> -- no logging; unchanged</span>
+                         <span class="fragment" data-fragment-index="2">
+                         -- square (add2 (add1 1))
+                         -- (square . add2 . add1) 1
+                         -- :type (.) -- > (.) :: (b -> c) -> (a -> b) -> (a -> c)</span>
+                       </code>
+                    </pre>
+                    <span class="fragment" data-fragment-index="4">Ordinary composition does not work.</span>
+                  </section>
+                  <section>
+                    <pre>
+                       <code class="haskell hljs" data-trim data-noescape>
+                          add1 x = (x + 1, "add1")
+                          square x = (x * x, "square")
+                          add2 x = x + 2
+
+                          <span class="fragment" data-fragment-index="0">-- square (add2 (add1 1))</span><span class="fragment" data-fragment-index="1"> => square (add2 (2, "add1))</span>
+
+                          <span class="fragment" data-fragment-index="2">-- add2 (2, "add1") => apply add2 (2, "add1)
+                          <span class="fragment" data-fragment-index="3">apply f (x, log) = (f x, log)</span>
+                          <span class="fragment" data-fragment-index="4">-- square (4, "add1") => applyWithLog square (4, "add1")
+                          <span class="fragment" data-fragment-index="5">applyWithLog f (x, log) = let (y, newLog) = f x
+                                                    in (y, log ++ newLog)</span>
+
+                          <span class="fragment" data-fragment-index="6">applyWithLog square (apply add2 (add 1)) -- (16, "add1square")</span>
+                          <span class="fragment" data-fragment-index="7">square `applyWithLog` (add2 `apply` (add1 1)) -- (16, "add1square")</span>
+                       </code>
+                    </pre>
+                  </section>
+                  <section>
+                    <pre>
+                       <code class="haskell hljs" data-trim data-noescape>
+                          (square        .        add2    .     add1) 1
+                           square `applyWithLog` (add2 `apply` (add1  1))
+                       </code>
+                    </pre>
+                    <div class="fragment" data-fragment-index="1">We implemented our <span style="color: orange">custom</span> function composition.</div>
+                    <div class="fragment" data-fragment-index="2">It does 2 things:</div>
+                    <div class="fragment" data-fragment-index="3">- deals with <span style="color: orange">different return and argument types</span></div>
+                    <div class="fragment" data-fragment-index="4">- does <span style="color: orange">some job</span> "in the background" (concatenating logs)</div>
+                  </section>
+                  <section>
+                    <span style="color: orange">Specific pattern</span>:
+                    <br>
+                    provide write-only environment between function calls (in our case log)
+                    <pre>
+                       <code class="haskell hljs" data-trim data-noescape>
+                          newtype Writer w a = Writer { runWriter :: (a, w) }
+
+                          instance (Monoid w) => Monad (Writer w) where
+                            return x = Writer (x, mempty)
+                            (Writer (x,v)) >>= f = let (Writer (y, v')) = f x
+                                                   in Writer (y, v `mappend` v')
+                       </code>
+                    </pre>
+                  </section>
+                  <section>
+                    <pre>
+                       <code class="haskell hljs" data-trim data-noescape>
+                          import Control.Monad.Writer
+
+                          add1 x = <span class="fragment" data-fragment-index="0">writer </span>(x + 1, "add1")
+                          square x = <span class="fragment" data-fragment-index="0">writer </span>(x * x, "square")
+                          add2 x = x + 2
+
+                          <span class="fragment" data-fragment-index="1">runWriter (add1 1 >>= (return . add2) >>= square) --> (16, "add1square)</span>
+                          <span class="fragment" data-fragment-index="2">runWriter (square =<< (return . add2) =<< add1 1) --> (16, "add1square)</span>
+                       </code>
+                    </pre>
+                  </section>
+                  <section>
+                    <span style="color: orange">General pattern</span>:
+                    <br>
+                    do something "extra" while composing functions
+                    <br>
+                    <br>
+                    <span style="color: orange">>>=</span>
+                    <br>
+                    <br>
+                    IO, read-only environment, stateful computations, etc.
                   </section>
                 </section>
                 <section>
