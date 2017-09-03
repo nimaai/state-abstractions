@@ -39,9 +39,6 @@
                     <img src="images/gun-shop.jpg"/>
                   </section>
                   <section>
-                    "A programming language that doesn't change the way you think is not worth learning." (Alan Perlis)
-                  </section>
-                  <section>
                     <img style="float: left; width: 150px; margin: 40px" src="images/ruby.png"/>
                     <img style="float: left; width: 150px; margin: 40px" src="images/clojure.png"/>
                     <img style="float: left; width: 150px; margin: 40px" src="images/haskell.png"/>
@@ -86,8 +83,8 @@
                           end
                         end
 
-                        m = Math.new
-                        m.square(m.add(1)) # => 4
+                        <span class="fragment" data-fragment-index="0">m = Math.new</span>
+                        <span class="fragment" data-fragment-index="1">m.square(m.add(1)) # => 4</span>
                       </code>
                     </pre>
                   </section>
@@ -391,13 +388,13 @@
                   </section>
                   <section>
                     <pre>
-                       <code class="elixir hljs" data-trim data-noescape>
+                       <code class="elixir hljs" style="max-height: 410px" data-trim data-noescape>
                           defmodule MyLogger do
-                            <span class="fragment" data-fragment-index="0">def start_link do
+                            def start_link do
                               Task.start_link(fn -> loop("") end)
-                            end</span>
+                            end
 
-                            defp loop(log) do
+                            <span class="fragment" data-fragment-index="0">defp loop(log) do
                               receive do
                                 {:get, caller} ->
                                   send caller, log
@@ -405,21 +402,99 @@
                                 {:put, value} ->
                                   loop(log <> value)
                               end
-                            end
+                            end</span>
                           end
                        </code>
                     </pre>
-                    <div style="font-size: 70%">
+                    <div class="fragment" data-fragment-index="1" style="font-size: 60%">
                       <span style="color: orange">receive(args)</span>
                       <br>
                       Checks if there is a message matching the given clauses in the current process mailbox. In case there is no such message, the current process hangs until a message arrives or waits until a given timeout value.
                     </div>
+                  </section>
+                  <section>
+                    <pre>
+                       <code class="elixir hljs" style="max-height: 550px" data-trim data-noescape>
+                          defmodule MyMath do
+                            <span class="fragment" data-fragment-index="0">def init_log do
+                              {:ok, pid} = MyLogger.start_link
+                              Process.register(pid, :log)
+                            end</span>
+
+                            def add1(x) do
+                              <span class="fragment" data-fragment-index="1">send(:log, {:put, "add1"})</span>
+                              x + 1
+                            end
+
+                            def square(x) do
+                              <span class="fragment" data-fragment-index="1">send(:log, {:put, "square"})</span>
+                              x * x
+                            end
+
+                            <span class="fragment" data-fragment-index="2">def log do
+                              send(:log, {:get, self()})
+                            end</span>
+                          end
+                       </code>
+                    </pre>
+                  </section>
+                  <section>
+                    <pre>
+                       <code class="elixir hljs" data-trim data-noescape>
+                          <span class="fragment" data-fragment-index="0">import MyMath</span>
+                          <span class="fragment" data-fragment-index="1">init_log # => true</span>
+                          <span class="fragment" data-fragment-index="2">square(add1 1) # => 4</span>
+                          <span class="fragment" data-fragment-index="3">log # => {:get, #PID<0.91.0>}</span>
+                          <span class="fragment" data-fragment-index="4">flush # => "add1square", :ok</span>
+                       </code>
+                    </pre>
+                  </section>
+                  <section>
+                    Agent
+                    <pre>
+                       <code class="elixir hljs" style="max-height: 550px" data-trim data-noescape>
+                          defmodule MyMath do
+                            <span class="fragment" data-fragment-index="0">def init_log do
+                              Agent.start_link(fn -> "" end, name: :log)
+                            end</span>
+
+                            def add1(x) do
+                              <span class="fragment" data-fragment-index="1">Agent.update(:log, fn log -> log <> "add1" end)</span>
+                              x + 1
+                            end
+
+                            def square(x) do
+                              <span class="fragment" data-fragment-index="1">Agent.update(:log, fn log -> log <> "square" end)</span>
+                              x * x
+                            end
+
+                            <span class="fragment" data-fragment-index="2">def log do
+                              Agent.get(:log, fn log -> log end)
+                            end</span>
+                          end
+                       </code>
+                    </pre>
+                  </section>
+                  <section>
+                    <pre>
+                       <code class="elixir hljs" data-trim data-noescape>
+                          <span class="fragment" data-fragment-index="0">import MyMath</span>
+                          <span class="fragment" data-fragment-index="1">init_log # => {:ok, #PID<0.91.0>}</span>
+                          <span class="fragment" data-fragment-index="2">square(add1 1) # => 4</span>
+                          <span class="fragment" data-fragment-index="3">log # => "add1square"</span>
+                       </code>
+                    </pre>
                   </section>
                   <section data-markdown>
                     <textarea data-template>
                       [elixir-lang.org](elixir-lang.org)
                     </textarea>
                   </section>
+                </section>
+                <section data-markdown>
+                  <textarea data-template>
+                    <img style="width: 300px" src="images/confused.gif"/>
+                  </textarea>
                 </section>
 			</div>
 		</div>
