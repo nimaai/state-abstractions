@@ -93,7 +93,7 @@
                   </section>
                   <section>
                     <pre>
-                      <code class="ruby hljs" data-trim data-noescape>
+                      <code class="ruby hljs" style="max-height: 550px" data-trim data-noescape>
                         class Math<span class="fragment" data-fragment-index="0">
                           def initialize
                             @log = ""
@@ -205,6 +205,12 @@
                     <textarea data-template>
                       <img style="height: 600px" src="images/stm.png"/>
                     </textarea>
+                  </section>
+                  <section>
+                    Update function must be <span style="color: orange">free from side-effects</span> (retries!).
+                    <br>
+                    <br>
+                    <span style="color: orange">Immutable data structures</span> and their <span style="color: orange">recycling</span> for memory efficiency.
                   </section>
                   <section data-markdown>
                     <textarea data-template>
@@ -353,7 +359,7 @@
                   <section>
                     <span style="color: orange">General pattern</span>:
                     <br>
-                    do something "extra" while composing functions
+                    do "extra work" while composing functions
                     <br>
                     <br>
                     <span style="color: orange">>>=</span>
@@ -361,12 +367,57 @@
                     <br>
                     IO, read-only environment, stateful computations, etc.
                   </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      [haskell.org](haskell.org)
+                    </textarea>
+                  </section>
                 </section>
                 <section>
                   <section data-markdown>
                     <textarea data-template>
                       #### Abstraction 4:
                       ## process
+                    </textarea>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      ## Elixir
+                      <img style="width: 300px" src="images/elixir.png"/>
+                    </textarea>
+                  </section>
+                  <section>
+                    Only local mutable state (within function).
+                  </section>
+                  <section>
+                    <pre>
+                       <code class="elixir hljs" data-trim data-noescape>
+                          defmodule MyLogger do
+                            <span class="fragment" data-fragment-index="0">def start_link do
+                              Task.start_link(fn -> loop("") end)
+                            end</span>
+
+                            defp loop(log) do
+                              receive do
+                                {:get, caller} ->
+                                  send caller, log
+                                  loop(log)
+                                {:put, value} ->
+                                  loop(log <> value)
+                              end
+                            end
+                          end
+                       </code>
+                    </pre>
+                    <div style="font-size: 70%">
+                      <span style="color: orange">receive(args)</span>
+                      <br>
+                      Checks if there is a message matching the given clauses in the current process mailbox. In case there is no such message, the current process hangs until a message arrives or waits until a given timeout value.
+                    </div>
+                  </section>
+                  <section data-markdown>
+                    <textarea data-template>
+                      [elixir-lang.org](elixir-lang.org)
                     </textarea>
                   </section>
                 </section>
