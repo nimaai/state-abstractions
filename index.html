@@ -350,6 +350,12 @@
                                                    in Writer (y, v `mappend` v')
                        </code>
                     </pre>
+                    <pre>
+                       <code class="haskell hljs" data-trim data-noescape>
+                          <span class="fragment" data-fragment-index="0">applyWithLog f (x, log) = let (y, newLog) = f x
+                                                    in (y, log ++ newLog)</span>
+                       </code>
+                    </pre>
                   </section>
                   <section>
                     <pre>
