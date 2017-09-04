@@ -36,6 +36,7 @@
                     </textarea>
                   </section>
                   <section>
+                    <div>No moral message.</div>
                     <img src="images/gun-shop.jpg"/>
                   </section>
                   <section>
@@ -170,31 +171,42 @@
                   <section>
                     <pre>
                       <code class="clojure hljs" data-trim data-noescape>
-                        (def log (atom ""))
+                        <span class="fragment" data-fragment-index="0">(def log (atom ""))</span>
 
-                        (do
-                          (future
-                            (swap! log (fn [l] (str l "foo"))))
-                          (future
-                            (swap! log (fn [l] (str l "bar")))))
+                        (defn add1 [x]
+                          <span class="fragment" data-fragment-index="1">(future (swap! log
+                                         (fn [log] (str log "add1"))))</span>
+                          (+ x 1))
 
-                        @log<span class="fragment" data-fragment-index="0"> ; => "foobar"</span>
+                        (defn square [x]
+                          <span class="fragment" data-fragment-index="1">(future (swap! log
+                                         (fn [log] (str log "square"))))</span>
+                          (* x x))
+
+                        <span class="fragment" data-fragment-index="2">(square (add1 1)) ; => 4</span>
+                        <span class="fragment" data-fragment-index="3">@log ; => "add1square"</span>
                       </code>
                     </pre>
                   </section>
                   <section>
                     <pre>
-                      <code class="clojure hljs" data-trim data-noescape>
+                      <code class="clojure hljs" style="max-height: 500px" data-trim data-noescape>
                         (def log (atom ""))
 
-                        (do
-                          (future
-                            (swap! log (fn [l] (do (Thread/sleep 1000) (str l "foo")))))
-                          (future
-                            (swap! log (fn [l] (str l "bar")))))
+                        (defn add1 [x]
+                          (future (swap! log
+                                         (fn [log] <span class="fragment" data-fragment-index="0">(do (Thread/sleep 1000)</span>
+                                                       (str log "add1"))))<span class="fragment" data-fragment-index="0">)</span>
+                          (+ x 1))
 
-                        <span class="fragment fade-out" data-fragment-index="1">@log<span class="fragment" data-fragment-index="0"> ; => "foo" ?</span></span>
-                        <span class="fragment fade-in" data-fragment-index="1">@log ; => "barfoo"</span>
+                        (defn square [x]
+                          (future (swap! log
+                                         (fn [log] (str log "square"))))
+                          (* x x))
+
+                        (square (add1 1)) ; => 4
+                        <span class="fragment fade-out" data-fragment-index="1">@log ; => "add1" ?</span>
+                        <span class="fragment" data-fragment-index="1">@log ; => "squareadd1" ?
                       </code>
                     </pre>
                   </section>

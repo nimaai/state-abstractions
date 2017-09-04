@@ -18,6 +18,22 @@
 
 @log ; => "foobar"
 
+(def log (atom ""))
+
+(defn add1 [x]
+  (future (swap! log
+                 (fn [log] (do (Thread/sleep 1000)
+                               (str log "add1")))))
+  (+ x 1))
+
+(defn square [x]
+  (future (swap! log
+                 (fn [log] (str log "square"))))
+  (* x x))
+
+(square (add1 1)) ; => 4
+@log ; => "add1square"
+
 ; does not work; probably because of `identical`
 
 ; (reset! log "")
